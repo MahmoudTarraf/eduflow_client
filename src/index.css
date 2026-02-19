@@ -1,0 +1,470 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;600;700;900&family=Poppins:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', sans-serif;
+  }
+  
+  /* Arabic font support */
+  html[lang="ar"], html[dir="rtl"] {
+    font-family: 'Cairo', 'Tajawal', 'Inter', sans-serif;
+  }
+  
+  /* Better Arabic font rendering */
+  html[lang="ar"] * {
+    letter-spacing: normal;
+  }
+  
+  body {
+    @apply bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300;
+  }
+  
+  /* RTL body styling */
+  body[dir="rtl"] {
+    text-align: right;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+  }
+  
+  .btn-outline {
+    @apply border border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+  
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2;
+  }
+
+  .btn-request-delete {
+    @apply inline-flex items-center justify-center px-3 py-2 rounded-md border text-sm font-medium
+      border-red-500 text-red-600 bg-red-50 hover:bg-red-100
+      dark:border-red-400 dark:text-red-200 dark:bg-red-900/40 dark:hover:bg-red-900/60
+      transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+
+  .btn-icon {
+    @apply p-2 rounded-lg transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+  }
+
+  .input-field {
+    @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400;
+  }
+  
+  .label {
+    @apply block text-sm font-medium text-gray-800 dark:text-gray-300 mb-1;
+  }
+  
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-300 dark:border-gray-700 p-6 transition-all duration-300 hover:shadow-lg;
+  }
+  
+  .gradient-bg {
+    @apply bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800;
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent;
+  }
+  
+  /* Fun font for AnimatedFeatures section */
+  .font-fun {
+    font-family: 'Poppins', 'Cairo', sans-serif;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .rtl {
+    direction: rtl;
+  }
+  
+  .ltr {
+    direction: ltr;
+  }
+  
+  /* RTL-specific padding and spacing */
+  [dir="rtl"] .btn-primary,
+  [dir="rtl"] .btn-secondary,
+  [dir="rtl"] .btn-outline,
+  [dir="rtl"] .btn-danger {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  [dir="rtl"] .card {
+    padding: 1.75rem;
+  }
+  
+  [dir="rtl"] button,
+  [dir="rtl"] a {
+    margin: 0 0.25rem;
+  }
+  
+  /* RTL-aware spacing utilities */
+  [dir="rtl"] .space-x-reverse > * + * {
+    margin-right: var(--tw-space-x-reverse);
+    margin-left: 0;
+  }
+  
+  /* RTL-aware margin utilities */
+  [dir="rtl"] .ml-auto {
+    margin-right: auto !important;
+    margin-left: 0 !important;
+  }
+  
+  [dir="rtl"] .mr-auto {
+    margin-left: auto !important;
+    margin-right: 0 !important;
+  }
+  
+  /* RTL-aware icon positioning */
+  [dir="rtl"] .icon-left {
+    left: auto;
+    right: 0;
+  }
+  
+  [dir="rtl"] .icon-right {
+    right: auto;
+    left: 0;
+  }
+  
+  /* RTL-aware rounded corners */
+  [dir="rtl"] .rounded-l-lg {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+  }
+  
+  [dir="rtl"] .rounded-r-lg {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+  }
+  
+  /* RTL transform adjustments */
+  [dir="rtl"] .transform-flip-x {
+    transform: scaleX(-1);
+  }
+}
+
+/* YouTube branding suppression helpers */
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.youtube-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: transparent;
+  z-index: 10;
+}
+
+.youtube-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 5%;
+  background: transparent;
+  box-shadow: 0 0 0 9999px #000;
+  pointer-events: none;
+}
+
+.youtube-overlay-edge {
+  position: absolute;
+  background: #000;
+  pointer-events: none;
+}
+
+.youtube-overlay-edge-top {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5%;
+}
+
+.youtube-overlay-edge-bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 5%;
+}
+
+.youtube-overlay-edge-left {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 5%;
+}
+
+.youtube-overlay-edge-right {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 5%;
+}
+
+.youtube-interaction-blocker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+  background: transparent;
+  z-index: 15;
+}
+
+.youtube-overlay-top-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 190px;
+  height: 120px;
+  pointer-events: none;
+  background: #000;
+  z-index: 20;
+}
+
+.youtube-overlay-bottom-right {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 260px;
+  height: 160px;
+  pointer-events: none;
+  background: #000;
+  z-index: 20;
+}
+
+iframe {
+  pointer-events: auto;
+}
+
+iframe::-internal-media-controls-download-button {
+  display: none !important;
+}
+
+iframe::-webkit-media-controls-enclosure {
+  overflow: hidden !important;
+}
+
+/* Custom animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Loading spinner */
+.spinner {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #4F46E5;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Hardened YouTube embed styling (custom player overlays) */
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.youtube-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: transparent;
+  z-index: 10;
+}
+
+.youtube-click-blocker,
+.youtube-interaction-blocker {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  background: transparent;
+  pointer-events: auto;
+}
+
+.youtube-overlay-top-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 190px;
+  height: 120px;
+  pointer-events: none;
+  background: #000;
+  z-index: 20;
+}
+
+.youtube-overlay-bottom-right {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 260px;
+  height: 160px;
+  pointer-events: none;
+  background: #000;
+  z-index: 20;
+}
+
+.video-container iframe {
+  pointer-events: none !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.video-container iframe.youtube-iframe {
+  pointer-events: none !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.video-container.youtube-startup-crop iframe.youtube-iframe {
+  transform: none !important;
+  transform-origin: center;
+}
+
+.video-container.youtube-startup-crop iframe {
+  transform: none !important;
+  transform-origin: center;
+}
+
+.video-container.youtube-startup-crop::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: none;
+  height: 0;
+  background: transparent;
+  pointer-events: none;
+  z-index: 35;
+}
+
+.video-container.youtube-startup-crop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  display: none;
+  background: transparent;
+  pointer-events: none;
+  z-index: 35;
+}
+
+.youtube-overlay-top-right,
+.youtube-overlay-bottom-right,
+.youtube-overlay-edge,
+.youtube-overlay::before {
+  display: none !important;
+}
+
+@supports (-webkit-mask-composite: xor) {
+  .youtube-overlay {
+    background: #000;
+    padding: 5%;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  .youtube-overlay-edge {
+    display: none;
+  }
+}
+
+iframe::-internal-media-controls-download-button {
+  display: none;
+}
+
+iframe::-webkit-media-controls-enclosure {
+  overflow: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #E0F2FE;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #BAE6FD;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7DD3FC;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #374151;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #6b7280;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}

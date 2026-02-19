@@ -1,0 +1,151 @@
+/* RTL Form Support */
+
+/* RTL Input Field Styles */
+.input-field-rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+.input-field-ltr {
+  direction: ltr;
+  text-align: left;
+}
+
+/* RTL Icon Positioning */
+.input-icon-left {
+  left: 0;
+  padding-left: 0.75rem;
+}
+
+.input-icon-right {
+  right: 0;
+  padding-right: 0.75rem;
+}
+
+/* RTL Button Positioning */
+.input-button-left {
+  left: 0;
+  padding-left: 0.75rem;
+}
+
+.input-button-right {
+  right: 0;
+  padding-right: 0.75rem;
+}
+
+/* RTL Padding Utilities */
+.input-padding-rtl {
+  padding-right: 2.5rem;
+  padding-left: 2.5rem;
+}
+
+.input-padding-ltr-left {
+  padding-left: 2.5rem;
+}
+
+.input-padding-ltr-right {
+  padding-right: 2.5rem;
+}
+
+/* RTL Label and Error Text */
+.form-label-rtl {
+  text-align: right;
+}
+
+.form-label-ltr {
+  text-align: left;
+}
+
+.form-error-rtl {
+  text-align: right;
+}
+
+.form-error-ltr {
+  text-align: left;
+}
+
+/* RTL Checkbox and Radio */
+.checkbox-container-rtl {
+  flex-direction: row-reverse;
+}
+
+.checkbox-container-ltr {
+  flex-direction: row;
+}
+
+.checkbox-label-rtl {
+  margin-right: 0.5rem;
+  margin-left: 0;
+}
+
+.checkbox-label-ltr {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+/* RTL Form Container */
+.form-container-rtl {
+  direction: rtl;
+}
+
+.form-container-ltr {
+  direction: ltr;
+}
+
+/* Arabic Font Support */
+[lang="ar"] {
+  font-family: 'Cairo', 'Tajawal', 'Amiri', 'Arial Unicode MS', sans-serif;
+}
+
+[lang="ar"] .input-field {
+  font-family: 'Cairo', 'Tajawal', 'Arial Unicode MS', sans-serif;
+}
+
+/* Hebrew Font Support */
+[lang="he"] {
+  font-family: 'Rubik', 'Open Sans Hebrew', 'Arial Hebrew', sans-serif;
+}
+
+[lang="he"] .input-field {
+  font-family: 'Rubik', 'Open Sans Hebrew', 'Arial Hebrew', sans-serif;
+}
+
+/* Persian/Farsi Font Support */
+[lang="fa"] {
+  font-family: 'Vazir', 'Tahoma', 'Arial Unicode MS', sans-serif;
+}
+
+[lang="fa"] .input-field {
+  font-family: 'Vazir', 'Tahoma', 'Arial Unicode MS', sans-serif;
+}
+
+/* RTL Animation Support */
+.rtl-slide-in {
+  animation: slideInRTL 0.3s ease-out;
+}
+
+.ltr-slide-in {
+  animation: slideInLTR 0.3s ease-out;
+}
+
+@keyframes slideInRTL {
+  from {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLTR {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
