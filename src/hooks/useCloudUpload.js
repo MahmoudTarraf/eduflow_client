@@ -11,7 +11,7 @@ export const useCloudUpload = () => {
   const [error, setError] = useState(null);
   const [uploadedAsset, setUploadedAsset] = useState(null);
 
-  const rawBase = process.env.REACT_APP_API_URL;
+  const rawBase = process.env.REACT_APP_API_URL || 'https://eduflow-server-87rv.onrender.com';
   const apiBase = rawBase
     ? `${String(rawBase).replace(/\/+$/, '')}${String(rawBase).replace(/\/+$/, '').endsWith('/api') ? '' : '/api'}`
     : '/api';
@@ -28,7 +28,7 @@ export const useCloudUpload = () => {
     try {
       const formData = new FormData();
       formData.append('file', file);
-      
+
       // Add metadata
       Object.keys(metadata).forEach(key => {
         if (metadata[key] !== undefined && metadata[key] !== null) {
@@ -76,7 +76,7 @@ export const useCloudUpload = () => {
     try {
       const formData = new FormData();
       formData.append('video', video);
-      
+
       // Add metadata
       Object.keys(metadata).forEach(key => {
         if (metadata[key] !== undefined && metadata[key] !== null) {

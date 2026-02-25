@@ -32,7 +32,7 @@ const SectionContentManagement = () => {
   const { theme } = useTheme();
   const { user } = useAuth();
   const [minVideoDurationSeconds, setMinVideoDurationSeconds] = useState(60);
-  
+
   const [section, setSection] = useState(null);
   const [content, setContent] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -131,12 +131,12 @@ const SectionContentManagement = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      
+
       const sectionRes = await axios.get(`/api/sections/${sectionId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSection(sectionRes.data.data);
-      
+
       const contentRes = await axios.get(`/api/sections/${sectionId}/content`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -184,7 +184,7 @@ const SectionContentManagement = () => {
       stopUploadJobPolling();
       try {
         uploadAbortControllerRef.current?.abort?.();
-      } catch (_) {}
+      } catch (_) { }
     };
   }, [stopUploadJobPolling]);
 
@@ -291,7 +291,7 @@ const SectionContentManagement = () => {
       if (uploadAbortControllerRef.current) {
         uploadAbortControllerRef.current.abort();
       }
-    } catch (_) {}
+    } catch (_) { }
 
     stopUploadJobPolling();
     uploadAbortControllerRef.current = null;
@@ -349,7 +349,7 @@ const SectionContentManagement = () => {
   // Fetch public upload limits
   const fetchPublicUploadSettings = useCallback(async () => {
     try {
-      const rawBase = process.env.REACT_APP_API_URL;
+      const rawBase = process.env.REACT_APP_API_URL || 'https://eduflow-server-87rv.onrender.com';
       const apiBase = rawBase
         ? `${String(rawBase).replace(/\/+$/, '')}${String(rawBase).replace(/\/+$/, '').endsWith('/api') ? '' : '/api'}`
         : '/api';
@@ -600,7 +600,7 @@ const SectionContentManagement = () => {
         return;
       }
     }
-    
+
     let didError = false;
 
     try {
@@ -622,7 +622,7 @@ const SectionContentManagement = () => {
       uploadAbortControllerRef.current = abortController;
 
       const token = localStorage.getItem('token');
-      
+
       const formData = new FormData();
       formData.append('title', uploadForm.title);
       formData.append('description', uploadForm.description);
@@ -667,7 +667,7 @@ const SectionContentManagement = () => {
         formData.append('uploadSessionId', id);
         startUploadJobPolling(id, token);
       }
-      
+
       const hasFileUpload = Boolean(videoFile || documentFile);
 
       const requestConfig = {
@@ -711,14 +711,14 @@ const SectionContentManagement = () => {
       }
 
       let contentResponse;
-      
+
       if (uploadType === 'lecture') {
         if (videoFile) {
           formData.append('video', videoFile);
         }
 
-        const url = editingContent 
-          ? `/api/content/${editingContent._id}` 
+        const url = editingContent
+          ? `/api/content/${editingContent._id}`
           : `/api/sections/${sectionId}/content/uploadLecture`;
         const method = editingContent ? 'put' : 'post';
 
@@ -727,8 +727,8 @@ const SectionContentManagement = () => {
         if (documentFile) formData.append('file', documentFile);
         formData.append('maxScore', 100); // Always 100 for assignments
 
-        const url = editingContent 
-          ? `/api/content/${editingContent._id}` 
+        const url = editingContent
+          ? `/api/content/${editingContent._id}`
           : `/api/sections/${sectionId}/content/uploadAssignment`;
         const method = editingContent ? 'put' : 'post';
 
@@ -738,8 +738,8 @@ const SectionContentManagement = () => {
         if (documentFile) formData.append('file', documentFile);
         formData.append('maxScore', 100); // Always 100 for projects
 
-        const url = editingContent 
-          ? `/api/content/${editingContent._id}` 
+        const url = editingContent
+          ? `/api/content/${editingContent._id}`
           : `/api/sections/${sectionId}/content/uploadProject`;
         const method = editingContent ? 'put' : 'post';
 
@@ -764,7 +764,7 @@ const SectionContentManagement = () => {
           try {
             const solutionFormData = new FormData();
             solutionFormData.append('solution', solutionFile);
-            
+
             await axios.post(
               `/api/content/${contentId}/uploadSolution`,
               solutionFormData,
@@ -786,7 +786,7 @@ const SectionContentManagement = () => {
       } else {
         toast.success(isVideoUpload ? 'Video uploaded successfully.' : (editingContent ? 'Content updated successfully!' : 'Content uploaded successfully!'));
       }
-      
+
       setShowUploadModal(false);
       resetForm();
       fetchSectionAndContent();
@@ -972,7 +972,7 @@ const SectionContentManagement = () => {
             </svg>
             Back
           </button>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <h1 className={`text-3xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
@@ -982,7 +982,7 @@ const SectionContentManagement = () => {
                 Upload and manage lectures, assignments, and projects
               </p>
             </div>
-            
+
             <div className="flex gap-2">
               <button
                 onClick={() => {
@@ -1055,11 +1055,11 @@ const SectionContentManagement = () => {
                 >
                   <div className="space-y-4">
                     {lectures.map((item) => (
-                      <SortableContentCard 
-                        key={item._id} 
+                      <SortableContentCard
+                        key={item._id}
                         id={item._id}
-                        item={item} 
-                        theme={theme} 
+                        item={item}
+                        theme={theme}
                         onRequestDelete={handleOpenDeleteRequest}
                         onAdminDelete={handleOpenAdminDelete}
                         onAssignUrl={handleOpenAssignUrl}
@@ -1079,8 +1079,8 @@ const SectionContentManagement = () => {
                           setDocumentFile(null);
                           setShowUploadModal(true);
                         }}
-                        getTypeIcon={getTypeIcon} 
-                        getTypeBadgeColor={getTypeBadgeColor} 
+                        getTypeIcon={getTypeIcon}
+                        getTypeBadgeColor={getTypeBadgeColor}
                         isDeletePending={pendingDeleteContentIds.includes(item._id)}
                       />
                     ))}
@@ -1111,11 +1111,11 @@ const SectionContentManagement = () => {
                 >
                   <div className="space-y-4">
                     {assignments.map((item) => (
-                      <SortableContentCard 
-                        key={item._id} 
+                      <SortableContentCard
+                        key={item._id}
                         id={item._id}
-                        item={item} 
-                        theme={theme} 
+                        item={item}
+                        theme={theme}
                         onRequestDelete={handleOpenDeleteRequest}
                         onAdminDelete={handleOpenAdminDelete}
                         isAdmin={isAdmin}
@@ -1132,8 +1132,8 @@ const SectionContentManagement = () => {
                           });
                           setShowUploadModal(true);
                         }}
-                        getTypeIcon={getTypeIcon} 
-                        getTypeBadgeColor={getTypeBadgeColor} 
+                        getTypeIcon={getTypeIcon}
+                        getTypeBadgeColor={getTypeBadgeColor}
                         isDeletePending={pendingDeleteContentIds.includes(item._id)}
                       />
                     ))}
@@ -1164,11 +1164,11 @@ const SectionContentManagement = () => {
                 >
                   <div className="space-y-4">
                     {projects.map((item) => (
-                      <SortableContentCard 
-                        key={item._id} 
+                      <SortableContentCard
+                        key={item._id}
                         id={item._id}
-                        item={item} 
-                        theme={theme} 
+                        item={item}
+                        theme={theme}
                         onRequestDelete={handleOpenDeleteRequest}
                         onAdminDelete={handleOpenAdminDelete}
                         isAdmin={isAdmin}
@@ -1185,8 +1185,8 @@ const SectionContentManagement = () => {
                           });
                           setShowUploadModal(true);
                         }}
-                        getTypeIcon={getTypeIcon} 
-                        getTypeBadgeColor={getTypeBadgeColor} 
+                        getTypeIcon={getTypeIcon}
+                        getTypeBadgeColor={getTypeBadgeColor}
                         isDeletePending={pendingDeleteContentIds.includes(item._id)}
                       />
                     ))}
@@ -1244,9 +1244,8 @@ const SectionContentManagement = () => {
               className={`${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-xl w-full max-w-5xl overflow-hidden max-h-[90vh] flex flex-col`}
             >
               <div
-                className={`flex items-center justify-between px-6 py-4 border-b ${
-                  theme === 'dark' ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'
-                }`}
+                className={`flex items-center justify-between px-6 py-4 border-b ${theme === 'dark' ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'
+                  }`}
               >
                 <h3 className={`text-lg font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                   {youtubeWatchModal.title}
@@ -1254,11 +1253,10 @@ const SectionContentManagement = () => {
                 <button
                   type="button"
                   onClick={() => setYoutubeWatchModal({ open: false, youtubeVideoId: '', title: '' })}
-                  className={`p-2 rounded-md transition ${
-                    theme === 'dark'
+                  className={`p-2 rounded-md transition ${theme === 'dark'
                       ? 'text-gray-300 hover:bg-gray-700'
                       : 'text-gray-600 hover:bg-gray-100'
-                  }`}
+                    }`}
                   aria-label="Close"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1287,9 +1285,8 @@ const SectionContentManagement = () => {
             >
               <form onSubmit={handleUploadContent} className="flex flex-col h-full min-h-0">
                 <div
-                  className={`flex items-center justify-between px-6 py-4 border-b ${
-                    theme === 'dark' ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'
-                  }`}
+                  className={`flex items-center justify-between px-6 py-4 border-b ${theme === 'dark' ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'
+                    }`}
                 >
                   <h3 className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                     {editingContent ? 'Edit' : 'Upload'} {uploadType.charAt(0).toUpperCase() + uploadType.slice(1)}
@@ -1300,11 +1297,10 @@ const SectionContentManagement = () => {
                       <button
                         type="button"
                         onClick={handleCancelUpload}
-                        className={`px-4 py-2 rounded-lg border text-sm ${
-                          theme === 'dark'
+                        className={`px-4 py-2 rounded-lg border text-sm ${theme === 'dark'
                             ? 'border-gray-600 text-gray-200 hover:bg-gray-700'
                             : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                        } transition`}
+                          } transition`}
                       >
                         Cancel Upload
                       </button>
@@ -1317,11 +1313,10 @@ const SectionContentManagement = () => {
                         resetForm();
                       }}
                       disabled={isBlockingUpload}
-                      className={`p-2 rounded-md transition ${
-                        theme === 'dark'
+                      className={`p-2 rounded-md transition ${theme === 'dark'
                           ? 'text-gray-300 hover:bg-gray-700'
                           : 'text-gray-600 hover:bg-gray-100'
-                      } disabled:opacity-50`}
+                        } disabled:opacity-50`}
                       aria-label="Close"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1332,176 +1327,172 @@ const SectionContentManagement = () => {
                 </div>
 
                 <div className="flex-1 min-h-0 overflow-y-auto px-6 py-4 space-y-4">
-                <div>
-                  <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
-                    Title *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={uploadForm.title}
-                    onChange={(e) => setUploadForm({ ...uploadForm, title: e.target.value })}
-                    className="input-field w-full"
-                    placeholder={`e.g., ${uploadType === 'lecture' ? 'Introduction to Variables' : uploadType === 'assignment' ? 'Practice Exercise 1' : 'Final Project'}`}
-                  />
-                </div>
-
-                <div>
-                  <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
-                    Description
-                  </label>
-                  <textarea
-                    rows="2"
-                    value={uploadForm.description}
-                    onChange={(e) => setUploadForm({ ...uploadForm, description: e.target.value })}
-                    className="input-field w-full"
-                  />
-                </div>
-
-                {(uploadType === 'lecture' || uploadType === 'project') && (
-                <div>
-                  <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
-                    Video File * (MP4, WEBM, MKV, AVI, MOV) — Max {uploadLimits.maxVideoSizeMB}MB
-                  </label>
-                  <div className={`mb-3 space-y-1 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                    <p>Videos must be at least {formatDuration(minVideoDurationSeconds)} long.</p>
-                    <p>A brief intro animation (about 3–4 seconds) will be added to the beginning of the video automatically and cannot be removed.</p>
-                  </div>
-                  <input
-                      type="file"
-                      accept="video/*,.mp4,.webm,.mkv,.avi,.mov"
-                      required={!editingContent}
-                      disabled={isBlockingUpload}
-                      onChange={(e) => {
-                        const f = e.target.files[0] || null;
-                        if (!f) { setVideoFile(null); return; }
-                        const maxBytes = (uploadLimits.maxVideoSizeMB || 500) * 1024 * 1024;
-                        if (f.size > maxBytes) {
-                          toast.error(`Video exceeds maximum size of ${uploadLimits.maxVideoSizeMB}MB`);
-                          e.target.value = '';
-                          setVideoFile(null);
-                          return;
-                        }
-                        setVideoFile(f);
-                      }}
-                      className={`w-full px-4 py-2 rounded-lg border ${
-                        theme === 'dark' 
-                          ? 'bg-gray-700 border-gray-600 text-white' 
-                          : 'bg-white border-gray-300 text-gray-900'
-                      } ${isBlockingUpload ? 'opacity-60 cursor-not-allowed' : ''}`}
-                    />
-                    {videoFile && (
-                      <p className={`text-sm mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                        Selected: {videoFile.name} ({(videoFile.size / 1024 / 1024).toFixed(2)} MB)
-                      </p>
-                    )}
-                    {editingContent && !videoFile && (
-                      <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
-                        Current video will be kept unless you upload a new file.
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                {(uploadType === 'assignment' || uploadType === 'project') && (
                   <div>
                     <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
-                      {uploadType === 'assignment' ? 'Assignment File * (.rar or .zip)' : 'Starter File * (.rar or .zip)'} — Max {uploadLimits.maxFileSizeMB}MB
+                      Title *
                     </label>
                     <input
-                      type="file"
-                      accept=".rar,.zip"
-                      required={!editingContent}
-                      disabled={isBlockingUpload}
-                      onChange={(e) => {
-                        const f = e.target.files[0] || null;
-                        if (!f) { setDocumentFile(null); return; }
-                        const maxBytes = (uploadLimits.maxFileSizeMB || 100) * 1024 * 1024;
-                        if (f.size > maxBytes) {
-                          toast.error(`File exceeds maximum size of ${uploadLimits.maxFileSizeMB}MB`);
-                          e.target.value = '';
-                          setDocumentFile(null);
-                          return;
-                        }
-                        setDocumentFile(f);
-                      }}
-                      className={`w-full px-4 py-2 rounded-lg border ${
-                        theme === 'dark' 
-                          ? 'bg-gray-700 border-gray-600 text-white' 
-                          : 'bg-white border-gray-300 text-gray-900'
-                      }`}
+                      type="text"
+                      required
+                      value={uploadForm.title}
+                      onChange={(e) => setUploadForm({ ...uploadForm, title: e.target.value })}
+                      className="input-field w-full"
+                      placeholder={`e.g., ${uploadType === 'lecture' ? 'Introduction to Variables' : uploadType === 'assignment' ? 'Practice Exercise 1' : 'Final Project'}`}
                     />
-                    {documentFile && (
-                      <p className={`text-sm mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                        Selected: {documentFile.name} ({(documentFile.size / 1024 / 1024).toFixed(2)} MB)
-                      </p>
-                    )}
-                    {editingContent && !documentFile && (
-                      <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
-                        Existing file will remain available unless you upload a new archive.
-                      </p>
-                    )}
                   </div>
-                )}
 
-                {(uploadType === 'assignment' || uploadType === 'project') && (
-                  <>
+                  <div>
+                    <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
+                      Description
+                    </label>
+                    <textarea
+                      rows="2"
+                      value={uploadForm.description}
+                      onChange={(e) => setUploadForm({ ...uploadForm, description: e.target.value })}
+                      className="input-field w-full"
+                    />
+                  </div>
+
+                  {(uploadType === 'lecture' || uploadType === 'project') && (
                     <div>
                       <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
-                        Solution File (.rar or .zip) - Optional
+                        Video File * (MP4, WEBM, MKV, AVI, MOV) — Max {uploadLimits.maxVideoSizeMB}MB
+                      </label>
+                      <div className={`mb-3 space-y-1 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                        <p>Videos must be at least {formatDuration(minVideoDurationSeconds)} long.</p>
+                        <p>A brief intro animation (about 3–4 seconds) will be added to the beginning of the video automatically and cannot be removed.</p>
+                      </div>
+                      <input
+                        type="file"
+                        accept="video/*,.mp4,.webm,.mkv,.avi,.mov"
+                        required={!editingContent}
+                        disabled={isBlockingUpload}
+                        onChange={(e) => {
+                          const f = e.target.files[0] || null;
+                          if (!f) { setVideoFile(null); return; }
+                          const maxBytes = (uploadLimits.maxVideoSizeMB || 500) * 1024 * 1024;
+                          if (f.size > maxBytes) {
+                            toast.error(`Video exceeds maximum size of ${uploadLimits.maxVideoSizeMB}MB`);
+                            e.target.value = '';
+                            setVideoFile(null);
+                            return;
+                          }
+                          setVideoFile(f);
+                        }}
+                        className={`w-full px-4 py-2 rounded-lg border ${theme === 'dark'
+                            ? 'bg-gray-700 border-gray-600 text-white'
+                            : 'bg-white border-gray-300 text-gray-900'
+                          } ${isBlockingUpload ? 'opacity-60 cursor-not-allowed' : ''}`}
+                      />
+                      {videoFile && (
+                        <p className={`text-sm mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                          Selected: {videoFile.name} ({(videoFile.size / 1024 / 1024).toFixed(2)} MB)
+                        </p>
+                      )}
+                      {editingContent && !videoFile && (
+                        <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
+                          Current video will be kept unless you upload a new file.
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {(uploadType === 'assignment' || uploadType === 'project') && (
+                    <div>
+                      <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
+                        {uploadType === 'assignment' ? 'Assignment File * (.rar or .zip)' : 'Starter File * (.rar or .zip)'} — Max {uploadLimits.maxFileSizeMB}MB
                       </label>
                       <input
                         type="file"
                         accept=".rar,.zip"
-                        onChange={(e) => setSolutionFile(e.target.files[0] || null)}
+                        required={!editingContent}
                         disabled={isBlockingUpload}
-                        className={`w-full px-4 py-2 rounded-lg border ${
-                          theme === 'dark' 
-                            ? 'bg-gray-700 border-gray-600 text-white' 
+                        onChange={(e) => {
+                          const f = e.target.files[0] || null;
+                          if (!f) { setDocumentFile(null); return; }
+                          const maxBytes = (uploadLimits.maxFileSizeMB || 100) * 1024 * 1024;
+                          if (f.size > maxBytes) {
+                            toast.error(`File exceeds maximum size of ${uploadLimits.maxFileSizeMB}MB`);
+                            e.target.value = '';
+                            setDocumentFile(null);
+                            return;
+                          }
+                          setDocumentFile(f);
+                        }}
+                        className={`w-full px-4 py-2 rounded-lg border ${theme === 'dark'
+                            ? 'bg-gray-700 border-gray-600 text-white'
                             : 'bg-white border-gray-300 text-gray-900'
-                        } ${isBlockingUpload ? 'opacity-60 cursor-not-allowed' : ''}`}
+                          }`}
                       />
-                      {solutionFile && (
+                      {documentFile && (
                         <p className={`text-sm mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                          Selected: {solutionFile.name} ({(solutionFile.size / 1024 / 1024).toFixed(2)} MB)
+                          Selected: {documentFile.name} ({(documentFile.size / 1024 / 1024).toFixed(2)} MB)
                         </p>
                       )}
-                      {editingContent && editingContent.solution && !solutionFile && (
-                        <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-green-500' : 'text-green-600'}`}>
-                          Current solution: {editingContent.solution.originalName}
+                      {editingContent && !documentFile && (
+                        <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
+                          Existing file will remain available unless you upload a new archive.
                         </p>
                       )}
-                      <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
-                        Students will only see the solution after their submission is graded.
-                      </p>
                     </div>
-                    <div>
+                  )}
+
+                  {(uploadType === 'assignment' || uploadType === 'project') && (
+                    <>
                       <div>
                         <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
-                          Max Score
+                          Solution File (.rar or .zip) - Optional
                         </label>
                         <input
-                          type="number"
-                          value={100}
-                          readOnly
-                          disabled
-                          className="input-field w-full bg-gray-100 dark:bg-gray-700 cursor-not-allowed"
-                          title="Max score is always 100 for assignments and projects"
+                          type="file"
+                          accept=".rar,.zip"
+                          onChange={(e) => setSolutionFile(e.target.files[0] || null)}
+                          disabled={isBlockingUpload}
+                          className={`w-full px-4 py-2 rounded-lg border ${theme === 'dark'
+                              ? 'bg-gray-700 border-gray-600 text-white'
+                              : 'bg-white border-gray-300 text-gray-900'
+                            } ${isBlockingUpload ? 'opacity-60 cursor-not-allowed' : ''}`}
                         />
+                        {solutionFile && (
+                          <p className={`text-sm mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                            Selected: {solutionFile.name} ({(solutionFile.size / 1024 / 1024).toFixed(2)} MB)
+                          </p>
+                        )}
+                        {editingContent && editingContent.solution && !solutionFile && (
+                          <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-green-500' : 'text-green-600'}`}>
+                            Current solution: {editingContent.solution.originalName}
+                          </p>
+                        )}
                         <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
-                          Max score is automatically set to 100
+                          Students will only see the solution after their submission is graded.
                         </p>
                       </div>
-                    </div>
-                  </>
-                )}
+                      <div>
+                        <div>
+                          <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
+                            Max Score
+                          </label>
+                          <input
+                            type="number"
+                            value={100}
+                            readOnly
+                            disabled
+                            className="input-field w-full bg-gray-100 dark:bg-gray-700 cursor-not-allowed"
+                            title="Max score is always 100 for assignments and projects"
+                          />
+                          <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
+                            Max score is automatically set to 100
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  )}
 
                 </div>
 
                 <div
-                  className={`px-6 py-4 border-t ${
-                    theme === 'dark' ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'
-                  }`}
+                  className={`px-6 py-4 border-t ${theme === 'dark' ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'
+                    }`}
                 >
                   {(uploading || uploadStage === 'server' || uploadStage === 'processing' || uploadStage === 'error') && (
                     <div className="mb-4">
@@ -1602,11 +1593,10 @@ const SectionContentManagement = () => {
                       <button
                         type="button"
                         onClick={handleCancelUpload}
-                        className={`px-6 py-2 rounded-lg border ${
-                          theme === 'dark'
+                        className={`px-6 py-2 rounded-lg border ${theme === 'dark'
                             ? 'border-gray-600 text-gray-200 hover:bg-gray-700'
                             : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                        } transition`}
+                          } transition`}
                       >
                         Cancel Upload
                       </button>
@@ -1618,11 +1608,10 @@ const SectionContentManagement = () => {
                         resetForm();
                       }}
                       disabled={isBlockingUpload}
-                      className={`px-6 py-2 rounded-lg ${
-                        theme === 'dark'
+                      className={`px-6 py-2 rounded-lg ${theme === 'dark'
                           ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                           : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      } transition disabled:opacity-50`}
+                        } transition disabled:opacity-50`}
                     >
                       Cancel
                     </button>
@@ -1639,9 +1628,9 @@ const SectionContentManagement = () => {
                             : uploadType === 'project'
                               ? 'Uploading project...'
                               : 'Uploading video...')
-                        : uploadStage === 'processing'
-                          ? 'Processing...'
-                          : (editingContent ? 'Update' : 'Upload')}
+                          : uploadStage === 'processing'
+                            ? 'Processing...'
+                            : (editingContent ? 'Update' : 'Upload')}
                     </button>
                   </div>
                 </div>
@@ -1693,11 +1682,10 @@ const SectionContentManagement = () => {
                     onClick={() =>
                       setDeleteRequestModal({ open: false, contentId: null, title: '', reason: '', submitting: false })
                     }
-                    className={`px-4 py-2 rounded-md border text-sm ${
-                      theme === 'dark'
+                    className={`px-4 py-2 rounded-md border text-sm ${theme === 'dark'
                         ? 'border-gray-600 text-gray-300 hover:bg-gray-700'
                         : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                    }`}
+                      }`}
                     disabled={deleteRequestModal.submitting}
                   >
                     Cancel
@@ -1742,11 +1730,10 @@ const SectionContentManagement = () => {
                 <button
                   type="button"
                   onClick={() => setAdminDeleteModal({ open: false, contentId: null, title: '', deleting: false })}
-                  className={`px-4 py-2 rounded-md border text-sm ${
-                    theme === 'dark'
+                  className={`px-4 py-2 rounded-md border text-sm ${theme === 'dark'
                       ? 'border-gray-600 text-gray-300 hover:bg-gray-700'
                       : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                  }`}
+                    }`}
                   disabled={adminDeleteModal.deleting}
                 >
                   Cancel
@@ -1797,11 +1784,10 @@ const SectionContentManagement = () => {
                   <button
                     type="button"
                     onClick={() => setAssignUrlModal({ open: false, contentId: null, title: '', url: '', saving: false })}
-                    className={`px-4 py-2 rounded-md border text-sm ${
-                      theme === 'dark'
+                    className={`px-4 py-2 rounded-md border text-sm ${theme === 'dark'
                         ? 'border-gray-600 text-gray-300 hover:bg-gray-700'
                         : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                    }`}
+                      }`}
                     disabled={assignUrlModal.saving}
                   >
                     Cancel
@@ -1848,11 +1834,10 @@ const SortableContentCard = ({ id, item, theme, onRequestDelete, onAdminDelete, 
           <div {...attributes} {...listeners} className="cursor-move p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
             <GripVertical className="w-4 h-4 text-gray-400" />
           </div>
-          
+
           {item.number && (
-            <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-              theme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'
-            }`}>
+            <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${theme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'
+              }`}>
               {item.number}
             </span>
           )}

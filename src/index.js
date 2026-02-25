@@ -16,7 +16,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 import 'swiper/css/autoplay';
 
-const rawApiUrl = process.env.REACT_APP_API_URL;
+const rawApiUrl = process.env.REACT_APP_API_URL || 'https://eduflow-server-87rv.onrender.com';
 if (rawApiUrl !== undefined && rawApiUrl !== null) {
   const trimmed = String(rawApiUrl).trim().replace(/\/+$/, '');
   const normalized = trimmed.endsWith('/api') ? trimmed.slice(0, -4) : trimmed;

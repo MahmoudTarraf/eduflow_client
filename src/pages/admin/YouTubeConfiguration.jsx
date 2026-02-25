@@ -40,7 +40,7 @@ const YouTubeConfiguration = () => {
   const [connecting, setConnecting] = useState(false);
   const [disconnecting, setDisconnecting] = useState(false);
 
-  const rawBase = process.env.REACT_APP_API_URL;
+  const rawBase = process.env.REACT_APP_API_URL || 'https://eduflow-server-87rv.onrender.com';
   const apiBase = rawBase
     ? `${String(rawBase).replace(/\/+$/, '')}${String(rawBase).replace(/\/+$/, '').endsWith('/api') ? '' : '/api'}`
     : '/api';
@@ -72,12 +72,12 @@ const YouTubeConfiguration = () => {
       toast.success('YouTube connected successfully');
       try {
         window.history.replaceState({}, document.title, window.location.pathname);
-      } catch (_) {}
+      } catch (_) { }
     } else if (status === 'error') {
       toast.error('YouTube connection failed. Please try again.');
       try {
         window.history.replaceState({}, document.title, window.location.pathname);
-      } catch (_) {}
+      } catch (_) { }
     }
   }, []);
 

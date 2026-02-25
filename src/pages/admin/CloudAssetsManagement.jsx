@@ -19,10 +19,10 @@ const CloudAssetsManagement = () => {
     sectionId: '',
     uploadedBy: ''
   });
-  
+
   const { deleteFile, deleteVideo } = useCloudUpload();
 
-  const rawBase = process.env.REACT_APP_API_URL;
+  const rawBase = process.env.REACT_APP_API_URL || 'https://eduflow-server-87rv.onrender.com';
   const apiBase = rawBase
     ? `${String(rawBase).replace(/\/+$/, '')}${String(rawBase).replace(/\/+$/, '').endsWith('/api') ? '' : '/api'}`
     : '/api';
@@ -35,7 +35,7 @@ const CloudAssetsManagement = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      
+
       // Fetch Cloudinary assets
       const cloudinaryRes = await axios.get(
         `${apiBase}/upload/cloudinary`,
@@ -260,11 +260,10 @@ const CloudAssetsManagement = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    video.privacyStatus === 'public' ? 'bg-green-100 text-green-800' :
-                    video.privacyStatus === 'unlisted' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-gray-100 text-gray-800'
-                  }`}>
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${video.privacyStatus === 'public' ? 'bg-green-100 text-green-800' :
+                      video.privacyStatus === 'unlisted' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-gray-100 text-gray-800'
+                    }`}>
                     {video.privacyStatus}
                   </span>
                 </td>
@@ -372,21 +371,19 @@ const CloudAssetsManagement = () => {
           <nav className="-mb-px flex space-x-8 px-6" aria-label="Tabs">
             <button
               onClick={() => setActiveTab('cloudinary')}
-              className={`${
-                activeTab === 'cloudinary'
+              className={`${activeTab === 'cloudinary'
                   ? 'border-indigo-500 text-indigo-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
             >
               📁 Cloudinary Files ({cloudinaryAssets.length})
             </button>
             <button
               onClick={() => setActiveTab('youtube')}
-              className={`${
-                activeTab === 'youtube'
+              className={`${activeTab === 'youtube'
                   ? 'border-indigo-500 text-indigo-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
             >
               🎥 Hosted Videos ({youtubeVideos.length})
             </button>

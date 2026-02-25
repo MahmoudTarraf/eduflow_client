@@ -142,7 +142,7 @@ const SectionContent = () => {
     const loadStorageConfig = async () => {
       let didError = false;
 
-    try {
+      try {
         const token = localStorage.getItem('token');
         const res = await axios.get('/api/storage/config', {
           headers: { Authorization: `Bearer ${token}` }
@@ -158,7 +158,7 @@ const SectionContent = () => {
 
   const fetchPublicUploadSettings = useCallback(async () => {
     try {
-      const rawBase = process.env.REACT_APP_API_URL;
+      const rawBase = process.env.REACT_APP_API_URL || 'https://eduflow-server-87rv.onrender.com';
       const apiBase = rawBase
         ? `${String(rawBase).replace(/\/+$/, '')}${String(rawBase).replace(/\/+$/, '').endsWith('/api') ? '' : '/api'}`
         : '/api';
@@ -298,11 +298,11 @@ const SectionContent = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
       }
-    } catch (_) {}
+    } catch (_) { }
 
     try {
       uploadAbortControllerRef.current?.abort?.();
-    } catch (_) {}
+    } catch (_) { }
 
     stopUploadJobPolling();
     uploadAbortControllerRef.current = null;
@@ -330,7 +330,7 @@ const SectionContent = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      
+
       const sectionRes = await axios.get(
         `/api/sections/${sectionId}`,
         { headers: { Authorization: `Bearer ${token}` } }
@@ -594,7 +594,7 @@ const SectionContent = () => {
 
       const token = localStorage.getItem('token');
       const formDataToSend = new FormData();
-      
+
       formDataToSend.append('title', formData.title);
       formDataToSend.append('description', formData.description);
       formDataToSend.append('sectionId', sectionId);
@@ -1027,9 +1027,8 @@ const SectionContent = () => {
               <h1 className="text-3xl font-bold text-gray-900">{section?.name}</h1>
               <p className="mt-2 text-gray-600">{section?.description || 'Manage content for this section'}</p>
               <div className="mt-2">
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  section?.isFree ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                }`}>
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${section?.isFree ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                  }`}>
                   {section?.isFree ? '✅ Free Section' : `💰 ${formatPrice(section?.priceCents || 0, section?.currency || 'SYR')}`}
                 </span>
               </div>
@@ -1099,9 +1098,8 @@ const SectionContent = () => {
                                       ref={providedInner.innerRef}
                                       {...providedInner.draggableProps}
                                       {...providedInner.dragHandleProps}
-                                      className={`relative transition ${
-                                        snapshot.isDragging ? 'shadow-xl opacity-80' : 'hover:shadow-md'
-                                      }`}
+                                      className={`relative transition ${snapshot.isDragging ? 'shadow-xl opacity-80' : 'hover:shadow-md'
+                                        }`}
                                     >
                                       {renderContentItem(item, index)}
                                     </div>

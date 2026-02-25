@@ -34,7 +34,7 @@ export const SocketProvider = ({ children }) => {
     if (!token) return;
 
     // Initialize socket connection
-    const rawSocketUrl = process.env.REACT_APP_SOCKET_URL || process.env.REACT_APP_API_URL;
+    const rawSocketUrl = process.env.REACT_APP_SOCKET_URL || process.env.REACT_APP_API_URL || 'https://eduflow-server-87rv.onrender.com';
     const trimmedSocketUrl = rawSocketUrl ? String(rawSocketUrl).trim().replace(/\/+$/, '') : '';
     const normalizedSocketUrl = trimmedSocketUrl.endsWith('/api') ? trimmedSocketUrl.slice(0, -4) : trimmedSocketUrl;
     const socketUrl = normalizedSocketUrl || 'http://localhost:5000';
@@ -67,7 +67,7 @@ export const SocketProvider = ({ children }) => {
     newSocket.on('receive_message', (message) => {
       console.log('📨 New message received:', message);
       setMessages((prev) => [...prev, message]);
-      
+
       // Add notification
       setNotifications((prev) => [...prev, {
         id: Date.now(),
