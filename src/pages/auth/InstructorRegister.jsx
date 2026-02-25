@@ -373,20 +373,37 @@ const InstructorRegister = () => {
 
     try {
       setLoading(true);
+      const uploadSessionId = Date.now().toString();
+
+      const pollInterval = setInterval(async () => {
+        try {
+          const res = await axios.get(`/api/video-upload-jobs/${uploadSessionId}`);
+          const job = res.data?.data;
+          if (job && typeof job.percent === 'number') {
+            toast.loading(`${t('instructorRegGeneratingAgreement') || 'Generating'} (${job.percent}%)`, { id: 'pdf-generation' });
+          }
+        } catch (e) { }
+      }, 2000);
+
+      toast.loading(t('instructorRegGeneratingAgreement') || 'Generating...', { id: 'pdf-generation' });
+
       // Generate PDF agreement
       const response = await axios.post('/api/instructor/generate-agreement', {
         email: formData.email,
         name: formData.name,
-        signature: formData.signature
+        signature: formData.signature,
+        uploadSessionId
       });
 
+      clearInterval(pollInterval);
+
       if (response.data.success) {
-        toast.success(t('instructorRegToastAgreementSigned'));
+        toast.success(t('instructorRegToastAgreementSigned'), { id: 'pdf-generation' });
         handleInputChange('agreementPdfUrl', response.data.pdfUrl);
         setCurrentStep(4);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || t('instructorRegToastAgreementFailed'));
+      toast.error(error.response?.data?.message || t('instructorRegToastAgreementFailed'), { id: 'pdf-generation' });
     } finally {
       setLoading(false);
     }
@@ -641,8 +658,8 @@ const Step1 = ({ formData, handleInputChange, handleExpertiseToggle, expertiseAr
               type="button"
               onClick={() => handleExpertiseToggle(area.value)}
               className={`px-4 py-2 rounded-lg border-2 transition ${formData.expertise.includes(area.value)
-                  ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400'
-                  : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-indigo-400'
+                ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400'
+                : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-indigo-400'
                 }`}
             >
               {t(area.labelKey)}
@@ -843,12 +860,26 @@ const Step4 = ({ formData, handleInputChange }) => {
                 return;
               }
 
+              let pollInterval;
               try {
                 toast.loading(t('instructorRegUploadingVideo'), { id: 'video-upload' });
 
                 const uploadData = new FormData();
                 uploadData.append('video', file);
                 uploadData.append('email', formData.email);
+
+                const uploadSessionId = Date.now().toString();
+                uploadData.append('uploadSessionId', uploadSessionId);
+
+                pollInterval = setInterval(async () => {
+                  try {
+                    const res = await axios.get(`/api/video-upload-jobs/${uploadSessionId}`);
+                    const job = res.data?.data;
+                    if (job && typeof job.percent === 'number') {
+                      toast.loading(t('instructorRegUploadingVideoPercent', { percent: job.percent }), { id: 'video-upload' });
+                    }
+                  } catch (e) { }
+                }, 2000);
 
                 // Upload to local server
                 const response = await axios.post('/api/instructor/upload-intro-video', uploadData, {
@@ -857,9 +888,14 @@ const Step4 = ({ formData, handleInputChange }) => {
                   },
                   onUploadProgress: (progressEvent) => {
                     const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                    toast.loading(t('instructorRegUploadingVideoPercent', { percent: percentCompleted }), { id: 'video-upload' });
+                    // Only use client progress while it's less than 100 (sending to server)
+                    if (percentCompleted < 100) {
+                      toast.loading(t('instructorRegUploadingVideoPercent', { percent: percentCompleted }), { id: 'video-upload' });
+                    }
                   }
                 });
+
+                clearInterval(pollInterval);
 
                 if (response.data.success) {
                   handleInputChange('introVideoUrl', response.data.videoUrl);
@@ -868,6 +904,8 @@ const Step4 = ({ formData, handleInputChange }) => {
               } catch (error) {
                 console.error('Video upload error:', error);
                 toast.error(error.response?.data?.message || t('instructorRegToastVideoSaveFailed'), { id: 'video-upload' });
+              } finally {
+                if (pollInterval) clearInterval(pollInterval);
               }
             }
           }}

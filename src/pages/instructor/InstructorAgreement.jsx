@@ -25,7 +25,7 @@ const InstructorAgreement = () => {
         if (res.data?.data?.maxVideoSizeMB) {
           setLimits({ maxVideoSizeMB: res.data.data.maxVideoSizeMB });
         }
-      } catch (e) {}
+      } catch (e) { }
     })();
   }, []);
 
@@ -87,6 +87,7 @@ const InstructorAgreement = () => {
       return;
     }
 
+    let pollInterval;
     try {
       setUploading(true);
       const formData = new FormData();
@@ -95,7 +96,23 @@ const InstructorAgreement = () => {
       formData.append('agreementText', agreementText);
       formData.append('agreementVersion', 'v1.0');
 
+      const uploadSessionId = Date.now().toString();
+      formData.append('uploadSessionId', uploadSessionId);
+
       const token = localStorage.getItem('token');
+
+      pollInterval = setInterval(async () => {
+        try {
+          const res = await axios.get(`/api/video-upload-jobs/${uploadSessionId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          const job = res.data?.data;
+          if (job && typeof job.percent === 'number') {
+            setUploadProgress(job.percent);
+          }
+        } catch (e) { }
+      }, 2000);
+
       const res = await axios.post('/api/instructor/submit-agreement', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -103,9 +120,13 @@ const InstructorAgreement = () => {
         },
         onUploadProgress: (progressEvent) => {
           const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          setUploadProgress(progress);
+          if (progress < 100) {
+            setUploadProgress(progress);
+          }
         }
       });
+
+      clearInterval(pollInterval);
 
       toast.success(res.data.message);
       navigate('/instructor/pending-approval');
@@ -113,6 +134,7 @@ const InstructorAgreement = () => {
       console.error('Submit agreement error:', error);
       toast.error(error.response?.data?.message || 'Failed to submit agreement');
     } finally {
+      if (pollInterval) clearInterval(pollInterval);
       setUploading(false);
       setUploadProgress(0);
     }
