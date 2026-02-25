@@ -36,8 +36,6 @@ pnpm-debug.log*
 # ============================================
 # Build Output & Distribution
 # ============================================
-dist/
-build/
 .next/
 out/
 coverage/
