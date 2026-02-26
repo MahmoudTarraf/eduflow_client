@@ -25,7 +25,7 @@ pnpm-debug.log*
 
 # Database credentials
 **/config/db.js
-**/config/keys.js
+**/config/keys.j
 **/config/secret.js
 
 # API keys and secrets
@@ -39,7 +39,6 @@ pnpm-debug.log*
 .next/
 out/
 coverage/
-*.tsbuildinfo
 
 # Temporary folders
 tmp/
