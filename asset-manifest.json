@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/eduflow_client/static/css/main.0e4184c2.css",
-    "main.js": "/eduflow_client/static/js/main.fc46ab54.js",
+    "main.js": "/eduflow_client/static/js/main.25d89b61.js",
     "static/js/821.8af61f7a.chunk.js": "/eduflow_client/static/js/821.8af61f7a.chunk.js",
     "reactPlayerHls.js": "/eduflow_client/static/js/reactPlayerHls.92f2cfcf.chunk.js",
     "reactPlayerDash.js": "/eduflow_client/static/js/reactPlayerDash.7673a811.chunk.js",
@@ -18,7 +18,7 @@
     "static/js/788.f9c7190f.chunk.js": "/eduflow_client/static/js/788.f9c7190f.chunk.js",
     "index.html": "/eduflow_client/index.html",
     "main.0e4184c2.css.map": "/eduflow_client/static/css/main.0e4184c2.css.map",
-    "main.fc46ab54.js.map": "/eduflow_client/static/js/main.fc46ab54.js.map",
+    "main.25d89b61.js.map": "/eduflow_client/static/js/main.25d89b61.js.map",
     "821.8af61f7a.chunk.js.map": "/eduflow_client/static/js/821.8af61f7a.chunk.js.map",
     "reactPlayerHls.92f2cfcf.chunk.js.map": "/eduflow_client/static/js/reactPlayerHls.92f2cfcf.chunk.js.map",
     "reactPlayerDash.7673a811.chunk.js.map": "/eduflow_client/static/js/reactPlayerDash.7673a811.chunk.js.map",
@@ -36,6 +36,6 @@
   },
   "entrypoints": [
     "static/css/main.0e4184c2.css",
-    "static/js/main.fc46ab54.js"
+    "static/js/main.25d89b61.js"
   ]
 }
