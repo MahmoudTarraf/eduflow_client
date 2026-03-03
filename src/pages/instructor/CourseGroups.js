@@ -98,8 +98,8 @@ const VideoPlayer = ({ videoUrl, onClose }) => {
                       setShowSpeedMenu(false);
                     }}
                     className={`w-full text-left px-4 py-2 text-sm ${playbackRate === speed
-                        ? 'bg-indigo-600 text-white'
-                        : 'text-gray-200 hover:bg-gray-600'
+                      ? 'bg-indigo-600 text-white'
+                      : 'text-gray-200 hover:bg-gray-600'
                       }`}
                   >
                     {speed}x
@@ -709,8 +709,8 @@ const CourseGroups = () => {
                       onClick={() => handleArchiveGroup(group)}
                       disabled={archivingGroupId === group._id}
                       className={`px-3 py-2 rounded-md border text-sm ${group.isArchived
-                          ? 'border-green-300 text-green-700 bg-green-50'
-                          : 'border-yellow-300 text-yellow-700 bg-yellow-50'
+                        ? 'border-green-300 text-green-700 bg-green-50'
+                        : 'border-yellow-300 text-yellow-700 bg-yellow-50'
                         }`}
                     >
                       {archivingGroupId === group._id
@@ -841,14 +841,32 @@ const CourseGroups = () => {
                                   )}
                                 </div>
                                 <div className="flex space-x-2">
-                                  <a
-                                    href={assignment.fileUrl}
-                                    download
+                                  <button
+                                    onClick={async () => {
+                                      try {
+                                        const token = localStorage.getItem('token');
+                                        const response = await axios.get(`/api/content/${assignment._id}/download`, {
+                                          headers: { Authorization: `Bearer ${token}` },
+                                          responseType: 'blob'
+                                        });
+                                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                                        const link = document.createElement('a');
+                                        link.href = url;
+                                        link.setAttribute('download', assignment.fileName || assignment.title + '.rar');
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        link.remove();
+                                        window.URL.revokeObjectURL(url);
+                                      } catch (error) {
+                                        console.error('Download error:', error);
+                                        toast.error(error.response?.data?.message || 'Failed to download assignment');
+                                      }
+                                    }}
                                     className="btn-icon"
                                     title="Download"
                                   >
                                     <Download className="w-4 h-4" />
-                                  </a>
+                                  </button>
                                   <button className="btn-icon" title="Edit">
                                     <Edit className="w-4 h-4" />
                                   </button>
@@ -895,14 +913,32 @@ const CourseGroups = () => {
                             >
                               <Play className="w-4 h-4" />
                             </button>
-                            <a
-                              href={section.project.fileUrl}
-                              download
+                            <button
+                              onClick={async () => {
+                                try {
+                                  const token = localStorage.getItem('token');
+                                  const response = await axios.get(`/api/content/${section.project._id}/download`, {
+                                    headers: { Authorization: `Bearer ${token}` },
+                                    responseType: 'blob'
+                                  });
+                                  const url = window.URL.createObjectURL(new Blob([response.data]));
+                                  const link = document.createElement('a');
+                                  link.href = url;
+                                  link.setAttribute('download', section.project.fileName || section.project.title + '.rar');
+                                  document.body.appendChild(link);
+                                  link.click();
+                                  link.remove();
+                                  window.URL.revokeObjectURL(url);
+                                } catch (error) {
+                                  console.error('Download error:', error);
+                                  toast.error(error.response?.data?.message || 'Failed to download project file');
+                                }
+                              }}
                               className="btn-icon"
                               title="Download"
                             >
                               <Download className="w-4 h-4" />
-                            </a>
+                            </button>
                             <button className="btn-icon" title="Edit">
                               <Edit className="w-4 h-4" />
                             </button>
@@ -1098,16 +1134,14 @@ const CourseGroups = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className={`w-full max-w-md rounded-lg shadow-lg ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
             <div
-              className={`px-6 py-4 border-b flex items-center justify-between ${
-                theme === 'dark' ? 'border-gray-700' : 'border-gray-200'
-              }`}
+              className={`px-6 py-4 border-b flex items-center justify-between ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'
+                }`}
             >
               <div>
                 <h2 className="text-lg font-semibold">Request Group Deletion</h2>
                 <p
-                  className={`mt-1 text-xs ${
-                    theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                  }`}
+                  className={`mt-1 text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                    }`}
                 >
                   This sends a request to the admin to permanently delete this group and all of its
                   sections and content. No changes happen until an admin approves.
@@ -1118,9 +1152,8 @@ const CourseGroups = () => {
                 onClick={() =>
                   setDeleteGroupModal({ open: false, group: null, reason: '', submitting: false })
                 }
-                className={`p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                  theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                }`}
+                className={`p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                  }`}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1135,9 +1168,8 @@ const CourseGroups = () => {
               </div>
               <div>
                 <label
-                  className={`block text-sm font-medium mb-1 ${
-                    theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
-                  }`}
+                  className={`block text-sm font-medium mb-1 ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
+                    }`}
                 >
                   Reason for deletion (minimum 20 characters)
                 </label>
@@ -1147,17 +1179,15 @@ const CourseGroups = () => {
                   onChange={(e) =>
                     setDeleteGroupModal((prev) => ({ ...prev, reason: e.target.value }))
                   }
-                  className={`w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                    theme === 'dark'
+                  className={`w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${theme === 'dark'
                       ? 'bg-gray-900 border-gray-700 text-gray-100'
                       : 'bg-white border-gray-300 text-gray-900'
-                  }`}
+                    }`}
                   placeholder="Explain why this group should be deleted..."
                 />
                 <p
-                  className={`mt-1 text-xs ${
-                    theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-                  }`}
+                  className={`mt-1 text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                    }`}
                 >
                   {(deleteGroupModal.reason || '').trim().length} / 20
                 </p>
@@ -1165,9 +1195,8 @@ const CourseGroups = () => {
             </div>
 
             <div
-              className={`px-6 py-4 border-t flex justify-end gap-3 ${
-                theme === 'dark' ? 'border-gray-700' : 'border-gray-200'
-              }`}
+              className={`px-6 py-4 border-t flex justify-end gap-3 ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'
+                }`}
             >
               <button
                 type="button"
@@ -1266,8 +1295,8 @@ const CourseGroups = () => {
                       <div
                         key={enrollment._id}
                         className={`p-4 rounded-lg border ${theme === 'dark'
-                            ? 'bg-gray-700 border-gray-600'
-                            : 'bg-gray-50 border-gray-200'
+                          ? 'bg-gray-700 border-gray-600'
+                          : 'bg-gray-50 border-gray-200'
                           }`}
                       >
                         <div className="flex items-start justify-between">
@@ -1275,30 +1304,30 @@ const CourseGroups = () => {
                             <div className="flex items-center space-x-3 mb-3">
                               <div
                                 className={`w-12 h-12 rounded-full flex items-center justify-center ${theme === 'dark'
-                                    ? 'bg-primary-900'
-                                    : 'bg-primary-100'
+                                  ? 'bg-primary-900'
+                                  : 'bg-primary-100'
                                   }`}
                               >
                                 <Users
                                   className={`w-6 h-6 ${theme === 'dark'
-                                      ? 'text-primary-400'
-                                      : 'text-primary-600'
+                                    ? 'text-primary-400'
+                                    : 'text-primary-600'
                                     }`}
                                 />
                               </div>
                               <div>
                                 <h3
                                   className={`text-lg font-semibold ${theme === 'dark'
-                                      ? 'text-white'
-                                      : 'text-gray-900'
+                                    ? 'text-white'
+                                    : 'text-gray-900'
                                     }`}
                                 >
                                   {enrollment.student?.name || 'Unknown Student'}
                                 </h3>
                                 <div
                                   className={`flex flex-wrap items-center gap-3 text-sm ${theme === 'dark'
-                                      ? 'text-gray-400'
-                                      : 'text-gray-600'
+                                    ? 'text-gray-400'
+                                    : 'text-gray-600'
                                     }`}
                                 >
                                   {enrollment.student?.email && (
@@ -1319,8 +1348,8 @@ const CourseGroups = () => {
 
                             <div
                               className={`grid grid-cols-2 gap-3 text-sm ${theme === 'dark'
-                                  ? 'text-gray-300'
-                                  : 'text-gray-700'
+                                ? 'text-gray-300'
+                                : 'text-gray-700'
                                 }`}
                             >
                               {enrollment.student?.city && (
@@ -1335,13 +1364,13 @@ const CourseGroups = () => {
                               <div>
                                 <span
                                   className={`px-2 py-1 rounded-full text-xs font-medium ${enrollment.paymentStatus === 'verified' ||
-                                      enrollment.paymentStatus === 'paid'
-                                      ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                                      : enrollment.paymentStatus === 'partial'
-                                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                                        : enrollment.paymentStatus === 'pending'
-                                          ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                                          : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+                                    enrollment.paymentStatus === 'paid'
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                    : enrollment.paymentStatus === 'partial'
+                                      ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                                      : enrollment.paymentStatus === 'pending'
+                                        ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                                        : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
                                     }`}
                                 >
                                   {enrollment.paymentStatus === 'verified'
@@ -1372,8 +1401,8 @@ const CourseGroups = () => {
                                 <div className="flex items-center justify-between text-xs mb-1">
                                   <span
                                     className={`flex items-center ${theme === 'dark'
-                                        ? 'text-gray-400'
-                                        : 'text-gray-600'
+                                      ? 'text-gray-400'
+                                      : 'text-gray-600'
                                       }`}
                                   >
                                     <TrendingUp className="w-3 h-3 mr-1" />
@@ -1381,8 +1410,8 @@ const CourseGroups = () => {
                                   </span>
                                   <span
                                     className={`font-medium ${theme === 'dark'
-                                        ? 'text-white'
-                                        : 'text-gray-900'
+                                      ? 'text-white'
+                                      : 'text-gray-900'
                                       }`}
                                   >
                                     {enrollment.progress.total || 0}%
@@ -1390,8 +1419,8 @@ const CourseGroups = () => {
                                 </div>
                                 <div
                                   className={`w-full rounded-full h-2 ${theme === 'dark'
-                                      ? 'bg-gray-600'
-                                      : 'bg-gray-200'
+                                    ? 'bg-gray-600'
+                                    : 'bg-gray-200'
                                     }`}
                                 >
                                   <div
@@ -1403,8 +1432,8 @@ const CourseGroups = () => {
                                 </div>
                                 <div
                                   className={`flex justify-between text-xs mt-2 ${theme === 'dark'
-                                      ? 'text-gray-400'
-                                      : 'text-gray-600'
+                                    ? 'text-gray-400'
+                                    : 'text-gray-600'
                                     }`}
                                 >
                                   <span>

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  CheckCircle, XCircle, Eye, Download, Video, 
-  FileText, Mail, Phone, Globe, Award 
+import {
+  CheckCircle, XCircle, Eye, Download, Video, Mail, Phone, Globe, Award
 } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -21,6 +20,7 @@ const InstructorApplications = () => {
   const [rejectionReason, setRejectionReason] = useState('');
   const [videoInfo, setVideoInfo] = useState(null);
   const [loadingVideo, setLoadingVideo] = useState(false);
+  const [showVideoPlayer, setShowVideoPlayer] = useState(false);
 
   useEffect(() => {
     fetchApplications();
@@ -67,7 +67,7 @@ const InstructorApplications = () => {
 
   const handleReject = async () => {
     if (!selectedApp) return;
-    
+
     if (!rejectionReason.trim()) {
       toast.error('Please provide a reason for rejection');
       return;
@@ -99,11 +99,11 @@ const InstructorApplications = () => {
   const openDetails = async (app) => {
     setSelectedApp(app);
     setShowDetails(true);
-    
+
     console.log('[InstructorApp] Opening details for:', app);
     console.log('[InstructorApp] userId:', app.userId);
     console.log('[InstructorApp] introVideoUrl:', app.introVideoUrl);
-    
+
     // Fetch video info from new agreement system
     if (app.userId) {
       try {
@@ -241,7 +241,7 @@ const InstructorApplications = () => {
                       <Eye className="w-4 h-4" />
                       View Details
                     </button>
-                    
+
                     <button
                       onClick={() => {
                         setSelectedApp(app);
@@ -252,7 +252,7 @@ const InstructorApplications = () => {
                       <CheckCircle className="w-4 h-4" />
                       Approve
                     </button>
-                    
+
                     <button
                       onClick={() => {
                         setSelectedApp(app);
@@ -339,7 +339,7 @@ const InstructorApplications = () => {
                     console.log('[Video Render] videoInfo:', videoInfo);
                     console.log('[Video Render] selectedApp.introVideoUrl:', selectedApp.introVideoUrl);
                     console.log('[Video Render] selectedApp.userId:', selectedApp.userId);
-                    
+
                     if (loadingVideo) {
                       console.log('[Video Render] Showing loading spinner');
                       return (
@@ -348,32 +348,21 @@ const InstructorApplications = () => {
                         </div>
                       );
                     }
-                    
-                    if (videoInfo?.hasVideo) {
-                      console.log('[Video Render] Showing videoInfo video:', videoInfo.videoUrl);
-                      const isYouTube =
-                        videoInfo?.storageType === 'youtube' ||
-                        !!videoInfo?.youtubeVideoId ||
-                        (typeof videoInfo?.videoUrl === 'string' && (videoInfo.videoUrl.includes('youtube.com') || videoInfo.videoUrl.includes('youtu.be')));
 
-                      if (isYouTube) {
-                        return (
-                          <CustomYouTubePlayer
-                            youtubeVideoId={videoInfo?.youtubeVideoId || null}
-                            embedUrl={videoInfo?.youtubeUrl || videoInfo?.videoUrl || ''}
-                            title="Instructor Introduction Video"
-                          />
-                        );
-                      }
+                    const hasVideo = (videoInfo?.hasVideo) || selectedApp.introVideoUrl;
 
-                      return <VideoPlayer videoUrl={videoInfo.videoUrl} />;
+                    if (hasVideo) {
+                      return (
+                        <button
+                          onClick={() => setShowVideoPlayer(true)}
+                          className="flex items-center gap-3 px-6 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition w-full justify-center"
+                        >
+                          <Video className="w-6 h-6" />
+                          <span className="font-medium">Play Introduction Video</span>
+                        </button>
+                      );
                     }
-                    
-                    if (selectedApp.introVideoUrl) {
-                      console.log('[Video Render] Showing old format video:', selectedApp.introVideoUrl);
-                      return <VideoPlayer videoUrl={selectedApp.introVideoUrl} isOldFormat={true} />;
-                    }
-                    
+
                     console.log('[Video Render] No video available');
                     return (
                       <div className="flex items-center justify-center p-8 bg-gray-100 dark:bg-gray-700 rounded-lg">
@@ -386,6 +375,44 @@ const InstructorApplications = () => {
             </motion.div>
           </div>
         )}
+
+        {/* Video Player Modal */}
+        {showVideoPlayer && selectedApp && (() => {
+          const isYouTube =
+            videoInfo?.storageType === 'youtube' ||
+            !!videoInfo?.youtubeVideoId ||
+            (typeof videoInfo?.videoUrl === 'string' && (videoInfo.videoUrl.includes('youtube.com') || videoInfo.videoUrl.includes('youtu.be')));
+
+          if (isYouTube && videoInfo?.hasVideo) {
+            return (
+              <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[60] p-4">
+                <div className="relative w-full max-w-4xl">
+                  <button
+                    onClick={() => setShowVideoPlayer(false)}
+                    className="absolute -top-12 right-0 p-2 bg-white/20 hover:bg-white/30 rounded-lg transition text-white z-10"
+                    title="Close Video"
+                  >
+                    <XCircle className="w-8 h-8" />
+                  </button>
+                  <CustomYouTubePlayer
+                    youtubeVideoId={videoInfo?.youtubeVideoId || null}
+                    embedUrl={videoInfo?.youtubeUrl || videoInfo?.videoUrl || ''}
+                    title="Instructor Introduction Video"
+                  />
+                </div>
+              </div>
+            );
+          }
+
+          const videoUrl = videoInfo?.hasVideo ? videoInfo.videoUrl : selectedApp.introVideoUrl;
+          return (
+            <VideoPlayer
+              videoUrl={videoUrl}
+              onClose={() => setShowVideoPlayer(false)}
+              title="Instructor Introduction Video"
+            />
+          );
+        })()}
 
         {/* Approve Confirmation */}
         <ConfirmDialog
@@ -450,10 +477,10 @@ const PDFDownloadButton = ({ pdfUrl }) => {
         window.open(pdfUrl, '_blank');
       } else {
         // Local PDF - download with proper baseURL
-        const fullUrl = pdfUrl.startsWith('http') 
-          ? pdfUrl 
+        const fullUrl = pdfUrl.startsWith('http')
+          ? pdfUrl
           : `${axios.defaults.baseURL || 'http://localhost:5000'}${pdfUrl}`;
-        
+
         // Create temporary link and trigger download
         const link = document.createElement('a');
         link.href = fullUrl;
